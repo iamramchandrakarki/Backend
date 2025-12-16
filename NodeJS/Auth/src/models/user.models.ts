@@ -1,52 +1,51 @@
-import {Schema, model} from 'mongoose';
-import { number } from 'zod/v4/core/regexes.cjs';
+import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema({
-    email : {
-        type : String,
-        required : true,
-        unique : true,
-        lowercase : true,
-        trim : true
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
     },
-    passwordHash : {
-        type : String,
-        required : true
+    passwordHash: {
+        type: String,
+        required: true
     },
-    role : {
-        type : String,
-        enum : ['user', 'admin']
+    role: {
+        type: String,
+        enum: ['user', 'admin']
     },
-    isEmailVerified : {
-        type : Boolean,
-        default : false
+    isEmailVerified: {
+        type: Boolean,
+        default: false
     },
-    name : {
-        type : String,
+    name: {
+        type: String,
     },
-    twoFactorEnabled : {
-        type : String,
-        default : false
+    twoFactorEnabled: {
+        type: String,
+        default: false
     },
-    twoFactorSecret : {
-        type : String,
-        default : undefined
+    twoFactorSecret: {
+        type: String,
+        default: undefined
     },
-    tokenVersion : {
-        type : number,
-        default : 0
+    tokenVersion: {
+        type: Number,
+        default: 0
     },
-    resetPasswordToken : {
-        type : String,
-        default : undefined
+    resetPasswordToken: {
+        type: String,
+        default: undefined
     },
-    resetPasswordExpires : {
-        type : Date,
-        default : undefined
+    resetPasswordExpires: {
+        type: Date,
+        default: undefined
     }
 }, {
-        timestamps : true
-    }
+    timestamps: true
+}
 );
 
 export const User = model('User', userSchema)

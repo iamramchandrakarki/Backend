@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+
+  // Dashboard related
+  analytics DashboardAnalytics[]
+  widgets   UserWidget[]
+}
+
+model DashboardAnalytics {
+  id         String   @id @default(cuid())
+  userId     String
+  metric     String
+  value      Json     // Flexible metric storage
+  timestamp  DateTime @default(now())
+  category   String
+
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model UserWidget {
+  id        String   @id @default(cuid())
+  userId    String
+  type      WidgetType
+  config    Json     // Widget configuration
+  position  Json     // Layout position
+  size      String
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum WidgetType {
+  METRIC_CARD
+  LINE_CHART
+  BAR_CHART
+  PIE_CHART
+  DATA_TABLE
+}

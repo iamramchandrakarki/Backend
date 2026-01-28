@@ -26,3 +26,11 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class AuthUserDto {
+  sub: string;
+  email?: string;
+  role?: string;
+  iat?: number;
+  exp?: number;
+}

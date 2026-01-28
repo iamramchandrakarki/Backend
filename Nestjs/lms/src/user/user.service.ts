@@ -1,7 +1,8 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
-import { RegisterDto } from 'src/auth/dto/registerUserDto';
+import { LoginDto, RegisterDto } from '../auth/dto/registerUserDto';
 import { User } from './schemas/user.schema';
 
 @Injectable()
@@ -24,6 +25,32 @@ export class UserService {
         throw new ConflictException('Email is already taken.');
       }
       throw err;
+    }
+  }
+
+  async findByEmail(email: string) {
+    return await this.userModel.findOne({ email });
+  }
+
+  async checkUser(loginUserDto: LoginDto) {
+    try {
+      const user = await this.findByEmail(loginUserDto.email);
+      if (!user) {
+        return null;
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        loginUserDto.password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        return null;
+      }
+
+      return user;
+    } catch (e: unknown) {
+      console.log(e);
+      throw e;
     }
   }
 }

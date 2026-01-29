@@ -5,21 +5,22 @@
 //     return originalMethod.apply(this, args);
 //   };
 // }
-
-function Admin(target: any, key: string, desc: PropertyDescriptor) {
-  const originalMethod = desc.value;
-  desc.value = function (...args: unknown[]) {
-    if (args[0].user.role !== "admin") {
-      console.log(`Not allowed to ${key}!!!`);
-      return;
-    }
-    return originalMethod.apply(this, args);
+function Role(...outerArgs: unknown[]) {
+  return function (target: any, key: string, desc: PropertyDescriptor) {
+    const originalMethod = desc.value;
+    desc.value = function (...args: unknown[]) {
+      if (!outerArgs.includes(args[0].user.role)) {
+        console.log(`Not allowed to ${key}!!!`);
+        return;
+      }
+      return originalMethod.apply(this, args);
+    };
   };
 }
 
 class ProductController {
   // @Log
-  @Admin
+  @Role("admin", "manager")
   create(req) {
     //console.log("Product has been called");
     // DB call
@@ -27,7 +28,7 @@ class ProductController {
   }
 
   // @Log
-  @Admin
+  @Role("admin", "manager")
   update(req) {
     //console.log("Update method called!");
     // Db call

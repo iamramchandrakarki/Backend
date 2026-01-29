@@ -10,7 +10,7 @@ function Admin(target: any, key: string, desc: PropertyDescriptor) {
   const originalMethod = desc.value;
   desc.value = function (...args: unknown[]) {
     if (args[0].user.role !== "admin") {
-      console.log("Not allowed!!!");
+      console.log(`Not allowed to ${key}!!!`);
       return;
     }
     return originalMethod.apply(this, args);
@@ -27,7 +27,8 @@ class ProductController {
   }
 
   // @Log
-  update() {
+  @Admin
+  update(req) {
     //console.log("Update method called!");
     // Db call
     console.log("Product has been updated.");
@@ -40,5 +41,11 @@ const req = {
     role: "guest",
   },
 };
+
+const req1 = {
+  user: {
+    role: "admin",
+  },
+};
 product.create(req);
-// product.update();
+product.update(req1);

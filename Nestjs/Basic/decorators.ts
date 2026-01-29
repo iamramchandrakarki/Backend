@@ -1,20 +1,32 @@
-function Log(target: any, key: string, desc: PropertyDescriptor) {
+// function Log(target: any, key: string, desc: PropertyDescriptor) {
+//   const originalMethod = desc.value;
+//   desc.value = function (...args: unknown[]) {
+//     console.log(`The ${key}  has been called.`);
+//     return originalMethod.apply(this, args);
+//   };
+// }
+
+function Admin(target: any, key: string, desc: PropertyDescriptor) {
   const originalMethod = desc.value;
   desc.value = function (...args: unknown[]) {
-    console.log(`The method  has been called.`);
+    if (args[0].user.role !== "admin") {
+      console.log("Not allowed!!!");
+      return;
+    }
     return originalMethod.apply(this, args);
   };
 }
 
 class ProductController {
-  @Log
-  create() {
+  // @Log
+  @Admin
+  create(req) {
     //console.log("Product has been called");
     // DB call
     console.log("Product has been created.");
   }
 
-  @Log
+  // @Log
   update() {
     //console.log("Update method called!");
     // Db call
@@ -23,4 +35,10 @@ class ProductController {
 }
 
 const product = new ProductController();
-product.create();
+const req = {
+  user: {
+    role: "guest",
+  },
+};
+product.create(req);
+// product.update();

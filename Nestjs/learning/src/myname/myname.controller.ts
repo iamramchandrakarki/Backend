@@ -5,6 +5,6 @@ import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
 export class MynameController {
     @Post('custom')
     transformName(@Body('name', new UppercasePipe()) name: string){
-        return {message:`Recieved name: ${name}`}
+        return {message:`Received name: ${name}`}
     }
 }
